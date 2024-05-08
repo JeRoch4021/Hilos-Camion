@@ -155,3 +155,37 @@ public class HiloCamion extends Thread{
     }
 }
 
+
+# Metodo donde se inicializa el hilo y el metodo donde comienza el hilo
+
+public void escuchas() {
+        botones_accion[0].addActionListener((ActionEvent e) -> {
+            int carga = Integer.parseInt(JOptionPane.showInputDialog("¿Cuál sera su carga?"));
+            
+            viajesHilos = new HiloCamion(carga, "leon", "monterrey", modelo_leon, modelo_monterrey);
+            modelo_leon.addRow(viajesHilos);
+            
+});
+
+botones_accion[6].addActionListener(new ActionListener() {
+            int sumar = 0;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (HiloCamion viaje_leon : viajes_leon) {
+                    if (viaje_leon.camion.getDejo()>=0 || !viaje_leon.isAlive()) {
+                        viaje_leon.start();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Aviso, un camion ya ha partido");
+                        break; 
+                    }
+                }
+                
+                for (HiloCamion viaje_monterrey : viajes_monterrey) {
+                    if (viaje_monterrey.camion.getDejo()>=0 && viaje_monterrey.isAlive()) {
+                        viaje_monterrey.start();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Aviso, un camion ya ha partido");
+                        break; 
+                    }
+            }
+        });
