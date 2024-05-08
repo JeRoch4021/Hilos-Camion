@@ -173,6 +173,10 @@ botones_accion[6].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 for (HiloCamion viaje_leon : viajes_leon) {
                     if (viaje_leon.camion.getDejo()>=0 || !viaje_leon.isAlive()) {
+                        #Cuando intento empezar un nuevo hilo despues de inicializarlo en
+                        # boton[0], el metodo falla y me aroja una excepcion de AWT-
+                        #EventQueue-0
+                        
                         viaje_leon.start();
                     } else {
                         JOptionPane.showMessageDialog(null, "Aviso, un camion ya ha partido");
