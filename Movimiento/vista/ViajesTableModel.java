@@ -20,9 +20,14 @@ public class ViajesTableModel extends AbstractTableModel {
     }
     
     public void removeRow(HiloCamion viaje) throws InterruptedException{
-        int row = viajes.size();
         viajes.remove(viaje);
+        int row = viajes.size();
         fireTableRowsDeleted(row, row);
+    }
+
+    public void removeRow(int idx) throws InterruptedException{
+        HiloCamion viaje = viajes.get(idx);
+        this.removeRow(viaje);
     }
 
     @Override

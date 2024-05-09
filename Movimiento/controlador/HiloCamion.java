@@ -2,6 +2,8 @@ package Movimiento.controlador;
 
 import Movimiento.modelo.Camion;
 import Movimiento.vista.ViajesTableModel;
+
+import javax.swing.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +17,7 @@ public class HiloCamion extends Thread{
     private ViajesTableModel destino_lista;
     private int guardarSalir = 0;
     private int guardarLlegar = 0;
+    private JProgressBar progreso;
 //    DefaultTableModel lista_origen;
 //    DefaultTableModel lista_destino;
     
@@ -46,20 +49,24 @@ public class HiloCamion extends Thread{
 //        }
         
         HiloCamion.sleep(3000);
-            
+        this.interrupt();
         this.camion.setDejo(this.camion.getCantidadCarga());
-        GestionarProgreso.numero(this.camion.getDejo());
+//        GestionarProgreso.numero(this.camion.getDejo());
         this.destino_lista.removeRow(this);
         this.origen_lista.addRow(this);
         this.origen_lista.fireTableDataChanged();
         this.destino_lista.fireTableDataChanged();
+        GestionarProgreso.actualizarProgresoBarraCamiones(this.camion.getDejo(), this.progreso);
+
     }
-    
+
+    public void agregar_barra_progreso(JProgressBar progreso) {
+        this.progreso = progreso;
+    }
+
     public HiloCamion(int carga, String origen, String destino, ViajesTableModel origen_lista, ViajesTableModel destino_lista) {
         this.origen_lista = origen_lista;
         this.destino_lista = destino_lista;
-//        this.lista_origen = lista_origen;
-//        this.lista_destino = lista_destino;
         camion = new Camion(this.getId(), carga, origen, destino);
     }
 
@@ -156,5 +163,9 @@ public class HiloCamion extends Thread{
         
         }
     
+    }
+
+    public void pause() throws InterruptedException {
+        super.wait();
     }
 }

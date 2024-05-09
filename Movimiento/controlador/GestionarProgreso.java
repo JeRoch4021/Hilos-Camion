@@ -6,12 +6,17 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
 public class GestionarProgreso {
-    private JProgressBar barra_camiones_leon;
-    private JProgressBar barra_camiones_monterrey;
+//    private JProgressBar barra_camiones_leon;
+//    private JProgressBar barra_camiones_monterrey;
 
     public GestionarProgreso() {
-        barra_camiones_leon = new JProgressBar(SwingConstants.HORIZONTAL, 0, 100);
-        barra_camiones_monterrey = new JProgressBar(SwingConstants.HORIZONTAL, 0, 100);
+//        barra_camiones_leon = new JProgressBar(SwingConstants.HORIZONTAL, 0, 100);
+//        barra_camiones_monterrey = new JProgressBar(SwingConstants.HORIZONTAL, 0, 100);
+    }
+
+    public static void actualizarProgresoBarraCamiones(int cantidad, JProgressBar progressBar) {
+        int valor_actual = progressBar.getValue();
+        progressBar.setValue(valor_actual + cantidad);
     }
     
     public JProgressBar progresoCamionesLeon(JProgressBar barra_camiones_leon) {

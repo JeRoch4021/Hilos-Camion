@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -36,7 +37,7 @@ public final class Interfaz {
     private JPanel panel_camiones_leon;
     private JPanel panel_camiones_monterrey;
     private JButton[] botones_accion;
-    private JProgressBar barra_camiones_leon_llegada;
+    private JProgressBar barra_camiones_leon;
     private JProgressBar barra_camiones_leon_salida;
     private JProgressBar barra_camiones_monterrey;
     private JLabel[] etiquetastexto;
@@ -65,7 +66,7 @@ public final class Interfaz {
         for (int i = 0; i < etiquetastexto.length; i++) {
             etiquetastexto[i] = new JLabel();
         }
-        barra_camiones_leon_llegada = new JProgressBar(SwingConstants.HORIZONTAL, 0, 100);
+        barra_camiones_leon = new JProgressBar(SwingConstants.HORIZONTAL, 0, 100);
         barra_camiones_monterrey = new JProgressBar(SwingConstants.HORIZONTAL, 0, 100);
         viajes_leon = new Stack<HiloCamion>(); // lista de hilos 
         viajes_monterrey = new ArrayList<HiloCamion>(); // lista de hilos
@@ -144,7 +145,7 @@ public final class Interfaz {
         for (int i = 0; i < etiquetastexto.length; i++) {
             panel_central.add(etiquetastexto[i]);
         }
-        panel_central.add(barraProgreso.progresoCamionesLeon(barra_camiones_leon_llegada));
+        panel_central.add(barraProgreso.progresoCamionesLeon(barra_camiones_leon));
         panel_central.add(barraProgreso.progresoCamionesMonterrey(barra_camiones_monterrey));
         panel_camiones_leon.add(desplegar_tabla_leon);
         panel_camiones_monterrey.add(desplegar_tabla_monterrey);
@@ -160,7 +161,7 @@ public final class Interfaz {
 //                modelo_leon.addRow(new HiloCamion(22,"leon", "monterrey", 10, 2, modelo_leon, modelo_monterrey));
 //                modelo_monterrey.addRow(new HiloCamion(23,"monterrey", "leon", 15, 7, modelo_monterrey, modelo_leon));
             //acumular_carga_camiones_leon = acumular_carga_camiones_leon + carga;
-            //barraProgreso.contenidoProgresoCamionesLeon(barra_camiones_leon_llegada, acumular_carga_camiones_leon);
+            //barraProgreso.contenidoProgresoCamionesLeon(barra_camiones_leon, acumular_carga_camiones_leon);
             contador++;
         });
         
@@ -180,12 +181,12 @@ public final class Interfaz {
                 contador--;
                 if (camiones_leon.getSelectedRowCount() == 1) {
                     int indice = camiones_leon.getSelectedRow();
-                    String objeto = camiones_leon.getValueAt(indice, 2).toString();
-                    int numero = Integer.parseInt(objeto);
-                    acumular_carga_camiones_leon = acumular_carga_camiones_leon - numero;
-                    barraProgreso.contenidoProgresoCamionesLeon(barra_camiones_leon_llegada, acumular_carga_camiones_leon);
+//                    String objeto = camiones_leon.getValueAt(indice, 2).toString();
+//                    int numero = Integer.parseInt(objeto);
+//                    acumular_carga_camiones_leon = acumular_carga_camiones_leon - numero;
+//                    barraProgreso.contenidoProgresoCamionesLeon(barra_camiones_leon, acumular_carga_camiones_leon);
                     try {
-                        modelo_leon.removeRow(viajesHilos);
+                        modelo_leon.removeRow(indice);
                     } catch (InterruptedException ex) {
                         System.out.println("Error no se pudo borrara");
                     }
@@ -198,11 +199,10 @@ public final class Interfaz {
         botones_accion[3].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (camiones_leon.getSelectedRowCount() == 1) {
+                if (camiones_monterrey.getSelectedRowCount() == 1) {
                     int indice = camiones_monterrey.getSelectedRow();
                     try {
-                        modelo_leon.removeRow(viajesHilos);
-                        viajes_monterrey.remove(indice);
+                        modelo_monterrey.removeRow(indice);
                     } catch (InterruptedException ex) {
                         System.out.println("Error no se pudo borrara");
                     }
@@ -211,43 +211,47 @@ public final class Interfaz {
                 }
             }
         });
+
+        botones_accion[4].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                List<HiloCamion> viajes = Stream.concat(viajes_leon.stream(), viajes_monterrey.stream()).toList();
+                for(HiloCamion viaje: viajes_monterrey) {
+                    System.out.println(viaje.getState());
+                    if (viaje.getState() != Thread.State.NEW && !viaje.isInterrupted()) {
+                        try {
+                            viaje.pause();
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                }
+
+            }
+        });
         
         botones_accion[6].addActionListener(new ActionListener() {
             int sumar = 0;
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (HiloCamion viaje_leon : viajes_leon) {
-                    if (viaje_leon.camion.getDejo()>=0 || !viaje_leon.isAlive()) {
+                    if (viaje_leon.camion.getDejo()==0 && !viaje_leon.isInterrupted() && viaje_leon.camion.getOrigen() == "leon" && barra_camiones_monterrey.getValue() < 100) {
+                        viaje_leon.agregar_barra_progreso(barra_camiones_monterrey);
                         viaje_leon.start();
 //                        try {
 //                            Thread.sleep(3000);
 //                        } catch (InterruptedException ex) {
 //                            System.out.println("ERROR");
 //                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Aviso, un camion ya ha partido");
-                        break; 
                     }
                 }
                 //etiquetastexto[2].setText(Integer.toString(traerValor.acumularValores()));
                 
                 for (HiloCamion viaje_monterrey : viajes_monterrey) {
-                    if (viaje_monterrey.camion.getDejo()>=0 && viaje_monterrey.isAlive()) {
+                    if (viaje_monterrey.camion.getDejo()==0 && !viaje_monterrey.isInterrupted() && viaje_monterrey.camion.getOrigen() == "monterrey" && barra_camiones_leon.getValue() < 100) {
+                        viaje_monterrey.agregar_barra_progreso(barra_camiones_leon);
                         viaje_monterrey.start();
-//                        try {
-//                            Thread.sleep(3000);
-//                        } catch (InterruptedException ex) {
-//                            System.out.println("ERROR");
-//                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Aviso, un camion ya ha partido");
-                        break; 
                     }
-//                    if(viaje_monterrey.bus.getTiempoLlegada()==0 && viaje_monterrey.bus.getTiempoSalida()==0){
-//                        JOptionPane.showMessageDialog(null, "Error, el camion ha terminado su viaje");
-//                    }else{
-//                        viaje_monterrey.start();
-//                    }
                 }
 
 //                for (HiloCamion viaje_leon : viajes_leon) {
