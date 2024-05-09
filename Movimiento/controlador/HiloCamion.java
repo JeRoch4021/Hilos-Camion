@@ -64,10 +64,12 @@ public class HiloCamion extends Thread{
         this.progreso = progreso;
     }
 
-    public HiloCamion(int carga, String origen, String destino, ViajesTableModel origen_lista, ViajesTableModel destino_lista) {
+    public HiloCamion(int carga, String origen, String destino, ViajesTableModel origen_lista, ViajesTableModel destino_lista, ThreadGroup grupo) {
+        super(grupo, origen);
         this.origen_lista = origen_lista;
         this.destino_lista = destino_lista;
         camion = new Camion(this.getId(), carga, origen, destino);
+
     }
 
     @Override
@@ -163,9 +165,5 @@ public class HiloCamion extends Thread{
         
         }
     
-    }
-
-    public void pause() throws InterruptedException {
-        super.wait();
     }
 }

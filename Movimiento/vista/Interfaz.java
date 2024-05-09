@@ -52,6 +52,9 @@ public final class Interfaz {
     private JScrollPane desplegar_tabla_monterrey;
     private int contador = 1;
     private int acumular_carga_camiones_leon = 0;
+    ThreadGroup grupo_hilos_leon = new ThreadGroup("Viajes Leon");
+    ThreadGroup grupo_hilos_monterrey = new ThreadGroup("Viajes Mty");
+    boolean paused = false;
 
     public Interfaz() {
         window = new JFrame();
@@ -155,7 +158,7 @@ public final class Interfaz {
         botones_accion[0].addActionListener((ActionEvent e) -> {
             int carga = Integer.parseInt(JOptionPane.showInputDialog("¿Cuál sera su carga?"));
             
-            viajesHilos = new HiloCamion(carga, "leon", "monterrey", modelo_leon, modelo_monterrey);
+            viajesHilos = new HiloCamion(carga, "leon", "monterrey", modelo_leon, modelo_monterrey, grupo_hilos_leon);
             modelo_leon.addRow(viajesHilos);
 //                modelo_leon.addRow(new HiloCamion(18,"leon", "monterrey", 12, 3, modelo_leon, modelo_monterrey));
 //                modelo_leon.addRow(new HiloCamion(22,"leon", "monterrey", 10, 2, modelo_leon, modelo_monterrey));
@@ -170,7 +173,7 @@ public final class Interfaz {
             public void actionPerformed(ActionEvent e) {
                 int carga = Integer.parseInt(JOptionPane.showInputDialog("¿Cuál sera su carga?"));
                 
-                viajesHilos = new HiloCamion(carga, "monterrey", "leon", modelo_monterrey, modelo_leon);
+                viajesHilos = new HiloCamion(carga, "monterrey", "leon", modelo_monterrey, modelo_leon, grupo_hilos_monterrey);
                 modelo_monterrey.addRow(viajesHilos);
             }
         });
@@ -215,18 +218,15 @@ public final class Interfaz {
         botones_accion[4].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                List<HiloCamion> viajes = Stream.concat(viajes_leon.stream(), viajes_monterrey.stream()).toList();
-                for(HiloCamion viaje: viajes_monterrey) {
-                    System.out.println(viaje.getState());
-                    if (viaje.getState() != Thread.State.NEW && !viaje.isInterrupted()) {
-                        try {
-                            viaje.pause();
-                        } catch (InterruptedException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
+                if (!paused) {
+                    grupo_hilos_leon.suspend();
+                    grupo_hilos_monterrey.suspend();
+                    paused = true;
+                } else {
+                    paused = false;
+                    grupo_hilos_leon.resume();
+                    grupo_hilos_monterrey.resume();
                 }
-
             }
         });
         
