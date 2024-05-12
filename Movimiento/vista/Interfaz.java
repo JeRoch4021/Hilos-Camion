@@ -11,11 +11,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.UUID;
+import java.util.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,6 +28,8 @@ public final class Interfaz {
     List<HiloCamion> viajes_monterrey;
     List<CamionProceso> camiones_leon;
     List<CamionProceso> camiones_mty;
+    Queue<CamionProceso> matehuala_leon;
+    Queue<CamionProceso> matehuala_mty;
     private JFrame window;
     private JPanel panel_central;
     private JPanel panel_camiones_leon;
@@ -71,6 +69,8 @@ public final class Interfaz {
         viajes_monterrey = new ArrayList<HiloCamion>();
         camiones_leon = new ArrayList<CamionProceso>();
         camiones_mty = new ArrayList<CamionProceso>();
+        matehuala_leon = new LinkedList<CamionProceso>();
+        matehuala_mty = new LinkedList<CamionProceso>();
         modelo_leon = new ViajesTableModel(camiones_leon);
         camiones_leon_table = new JTable(modelo_leon);
         desplegar_tabla_leon = new JScrollPane(camiones_leon_table);
@@ -153,21 +153,24 @@ public final class Interfaz {
     }
 
     public void escuchas() {
+        // agrega camion leon
         botones_accion[0].addActionListener((ActionEvent e) -> {
-            int lleva = Integer.parseInt(JOptionPane.showInputDialog("¿Cuál sera su carga?"));
-            Camion camion = new Camion(lleva, CentralCamioneraEnum.LEON, CentralCamioneraEnum.MONTERREY);
-            modelo_leon.addRow(new CamionProceso(camion));
+            int deja = Integer.parseInt(JOptionPane.showInputDialog("¿Cuál sera su carga?"));
+            Camion camion = new Camion(deja, CentralCamioneraEnum.LEON, CentralCamioneraEnum.MONTERREY);
+            modelo_leon.addRow(new CamionProceso(camion, matehuala_leon, matehuala_mty));
         });
-        
+
+        // agrega camion mty
         botones_accion[1].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int lleva = Integer.parseInt(JOptionPane.showInputDialog("¿Cuál sera su carga?"));
-                Camion camion = new Camion(lleva, CentralCamioneraEnum.MONTERREY, CentralCamioneraEnum.LEON);
-                modelo_monterrey.addRow(new CamionProceso(camion));
+                int deja = Integer.parseInt(JOptionPane.showInputDialog("¿Cuál sera su carga?"));
+                Camion camion = new Camion(deja, CentralCamioneraEnum.MONTERREY, CentralCamioneraEnum.LEON);
+                modelo_monterrey.addRow(new CamionProceso(camion, matehuala_leon, matehuala_mty));
             }
         });
-        
+
+        //remueve camion leon
         botones_accion[2].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -184,7 +187,8 @@ public final class Interfaz {
                 }
             }
         });
-        
+
+        // remueve camion mty
         botones_accion[3].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

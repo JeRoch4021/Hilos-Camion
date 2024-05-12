@@ -57,7 +57,7 @@ public class ViajesTableModel extends AbstractTableModel {
             case 0: 
                 return "Camion " + camion.getId()+": "+ camion.getOrigen();
             case 1:
-                return Integer.toString(camion.getDejo());
+                return Integer.toString(camion.getDeja());
             case 2:
                 return Integer.toString(camion.getCantidadCarga());
            }

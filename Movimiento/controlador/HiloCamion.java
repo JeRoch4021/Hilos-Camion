@@ -25,10 +25,10 @@ public class HiloCamion extends Thread{
         
         HiloCamion.sleep(3000);
         this.interrupt();
-        this.camion.setDejo(this.camion.getCantidadCarga());
+        this.camion.setDeja(this.camion.getCantidadCarga());
         this.origen_lista.fireTableDataChanged();
         this.destino_lista.fireTableDataChanged();
-        GestionarProgreso.actualizarProgresoBarraCamiones(this.camion.getDejo(), this.progreso);
+//        GestionarProgreso.actualizarProgresoBarraCamiones(this.camion.setDeja(), this.progreso);
 
     }
 
@@ -62,9 +62,9 @@ public class HiloCamion extends Thread{
 //                }
                 HiloCamion.sleep(3000);
                 
-                this.camion.setDejo(this.camion.getCantidadCarga());
+                this.camion.setDeja(this.camion.getCantidadCarga());
 
-                traerValor.setValorDejado(this.camion.getDejo());
+//                traerValor.setValorDejado(this.camion.setDeja());
                 traerValor.acumularValores();
 //                this.destino_lista.addRow(this);
 //                this.origen_lista.removeRow(this);
