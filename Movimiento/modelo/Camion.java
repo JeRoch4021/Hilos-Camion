@@ -1,26 +1,29 @@
 package Movimiento.modelo;
 
+import java.util.Random;
+
 public class Camion {
     private long id;
-    private int cantidadCarga;
-    private int dejo;
-    private String origen;
-    private String destino;
-    private int tiempoLlegada; // en milisegundos
-    private int tiempoSalida; // en milisegundos
-    
-    public Camion (long id, int carga, String origen, String destino){
-        this.id = id;
-        this.cantidadCarga = carga;
-        this.dejo = 0;
+    private int lleva;
+    private int deja;
+    private CentralCamioneraEnum origen;
+    private CentralCamioneraEnum destino;
+
+    public Camion(int lleva, CentralCamioneraEnum origen, CentralCamioneraEnum destino) {
+        Random random = new Random();
+        this.id = random.nextInt(9000) + 1000;
+        this.lleva = lleva;
+        this.deja = 0;
         this.origen = origen;
         this.destino = destino;
-//        this.tiempoLlegada = tiempoLlegada;
-//        this.tiempoSalida = tiempoSalida;
     }
-    
+
+    public String getNombreCamion() {
+        return "Camion: " + this.getId();
+    }
+
     public String[] obtenerInformacion() {
-        String [] data = {"Camion: "+ getId(), null, null};
+        String[] data = {"Camion: " + getId(), null, null};
         return data;
     }
 
@@ -39,54 +42,23 @@ public class Camion {
     }
 
     /**
-     * @return the tiempoLlegada
-     */
-//    public int getTiempoLlegada() {
-//        return tiempoLlegada;
-//    }
-
-    /**
-     * @param tiempoLlegada the tiempoLlegada to set
-     */
-//    public void setTiempoLlegada(int tiempoLlegada) {
-//        this.tiempoLlegada = tiempoLlegada;
-//    }
-
-    /**
-     * @return the tiempoSalida
-     */
-//    public int getTiempoSalida() {
-//        return tiempoSalida;
-//    }
-
-    /**
-     * @param tiempoSalida the tiempoSalida to set
-     */
-//    public void setTiempoSalida(int tiempoSalida) {
-//        this.tiempoSalida = tiempoSalida;
-//    }
-
-    /**
      * @return the numeroPasajeros
      */
     public int getCantidadCarga() {
-        return cantidadCarga;
+        return lleva;
     }
 
-//    public int getNumeroPasajeros() {
-//        return numeroPasajeros;
-//    }
     /**
      * @return the origen
      */
-    public String getOrigen() {
+    public CentralCamioneraEnum getOrigen() {
         return origen;
     }
 
     /**
      * @return the destino
      */
-    public String getDestino() {
+    public CentralCamioneraEnum getDestino() {
         return destino;
     }
 
@@ -94,15 +66,15 @@ public class Camion {
      * @return the dejo
      */
     public int getDejo() {
-        return dejo;
+        return deja;
     }
 
     /**
      * @param dejo the dejo to set
      */
     public void setDejo(int dejo) {
-        this.dejo = dejo;
+        this.deja = dejo;
     }
-    
+
 }
 

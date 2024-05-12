@@ -1,33 +1,37 @@
 package Movimiento.vista;
 
+import Movimiento.controlador.CamionProceso;
 import Movimiento.controlador.HiloCamion;
+import Movimiento.modelo.Camion;
+
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 public class ViajesTableModel extends AbstractTableModel {
-    List<HiloCamion> viajes;
-//    private List<SI> li = new ArrayList();
+    List<CamionProceso> hilos;
     private String[] columnNames = {"Camion", "Dejo", "Llevo"};
 
-    public ViajesTableModel(List<HiloCamion> viajes){
-         this.viajes = viajes;
+    public ViajesTableModel(List<CamionProceso> camiones){
+         this.hilos = camiones;
     }
     
-    public void addRow(HiloCamion viaje){
-        int row = viajes.size();
-        viajes.add(viaje);
+    public void addRow(CamionProceso hilo){
+        int row = hilos.size();
+        hilos.add(hilo);
         fireTableRowsInserted(row, row);
     }
     
-    public void removeRow(HiloCamion viaje) throws InterruptedException{
-        viajes.remove(viaje);
-        int row = viajes.size();
+    public void removeRow(CamionProceso hilo) throws InterruptedException{
+        hilos.remove(hilo);
+        int row = hilos.size();
         fireTableRowsDeleted(row, row);
     }
 
     public void removeRow(int idx) throws InterruptedException{
-        HiloCamion viaje = viajes.get(idx);
-        this.removeRow(viaje);
+        CamionProceso hilo = hilos.get(idx);
+        hilo.cancel(true);
+        System.out.println("Camion " + hilo.getCamion().getId() + " detenido...");
+        this.removeRow(hilo);
     }
 
     @Override
@@ -37,7 +41,7 @@ public class ViajesTableModel extends AbstractTableModel {
 
     @Override     
     public int getRowCount() {
-        return viajes.size();
+        return hilos.size();
     }
 
     @Override        
@@ -47,19 +51,15 @@ public class ViajesTableModel extends AbstractTableModel {
 
     @Override
     public String getValueAt(int rowIndex, int columnIndex) {
-        HiloCamion viaje = viajes.get(rowIndex);
+        CamionProceso hilo = hilos.get(rowIndex);
+        Camion camion = hilo.getCamion();
         switch (columnIndex) {
             case 0: 
-                return "Camion " + viaje.camion.getId()+": "+ viaje.camion.getOrigen();
-//                return "Origen: " + viaje.bus.getOrigen();
+                return "Camion " + camion.getId()+": "+ camion.getOrigen();
             case 1:
-                return Integer.toString(viaje.camion.getDejo());
+                return Integer.toString(camion.getDejo());
             case 2:
-                return Integer.toString(viaje.camion.getCantidadCarga());
-//            case 3:
-//                return Integer.toString(viaje.bus.getTiempoLlegada());
-//            case 4:
-//                return Integer.toString(viaje.bus.getTiempoSalida());
+                return Integer.toString(camion.getCantidadCarga());
            }
            return null;
    }
@@ -72,10 +72,6 @@ public class ViajesTableModel extends AbstractTableModel {
              case 1:
                return String.class;
              case 2:
-               return String.class;
-             case 3:
-               return String.class;
-             case 4:
                return String.class;
              }
              return null;

@@ -22,38 +22,10 @@ public class HiloCamion extends Thread{
 //    DefaultTableModel lista_destino;
     
     public void regresarATablaOrigen() throws InterruptedException{
-//        System.out.println("Viaje sale en " + this.bus.getTiempoSalida() + " minutos");
-//        GuardarSalida = this.bus.getTiempoSalida();
-//        GuardarLlegada = this.bus.getTiempoLlegada();
-//        while (GuardarSalida > 0) {
-//            HiloCamion.sleep(1000);
-//            GuardarSalida--;
-//            this.bus.setTiempoSalida(GuardarSalida);
-//            this.destino_lista.fireTableDataChanged();
-//        }
-//        System.out.println("Viaje iniciado: " + Arrays.toString(bus.obtenerInformacion()));
-//        while (GuardarLlegada > 0) {
-//            HiloCamion.sleep(1000);
-//            GuardarLlegada--;
-//            this.bus.setTiempoLlegada(GuardarLlegada);
-//            this.destino_lista.fireTableDataChanged();
-//        }
-
-//        while (guardarSalir > 0) {
-//            guardarSalir--;
-//            HiloCamion.sleep(1000);
-//        }
-//        while (guardarLlegar > 0) {
-//            guardarLlegar--;
-//            HiloCamion.sleep(1000);
-//        }
         
         HiloCamion.sleep(3000);
         this.interrupt();
         this.camion.setDejo(this.camion.getCantidadCarga());
-//        GestionarProgreso.numero(this.camion.getDejo());
-        this.destino_lista.removeRow(this);
-        this.origen_lista.addRow(this);
         this.origen_lista.fireTableDataChanged();
         this.destino_lista.fireTableDataChanged();
         GestionarProgreso.actualizarProgresoBarraCamiones(this.camion.getDejo(), this.progreso);
@@ -68,7 +40,7 @@ public class HiloCamion extends Thread{
         super(grupo, origen);
         this.origen_lista = origen_lista;
         this.destino_lista = destino_lista;
-        camion = new Camion(this.getId(), carga, origen, destino);
+//        camion = new Camion(this.getId(), carga, origen, destino);
 
     }
 
@@ -94,8 +66,8 @@ public class HiloCamion extends Thread{
 
                 traerValor.setValorDejado(this.camion.getDejo());
                 traerValor.acumularValores();
-                this.destino_lista.addRow(this);
-                this.origen_lista.removeRow(this);
+//                this.destino_lista.addRow(this);
+//                this.origen_lista.removeRow(this);
                 this.origen_lista.fireTableDataChanged();
                 this.destino_lista.fireTableDataChanged();
                 
